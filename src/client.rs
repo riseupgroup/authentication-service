@@ -18,6 +18,16 @@ pub struct Client {
     host_key: PKey<Public>,
 }
 
+impl Client {
+    pub const fn service_id(&self) -> i32 {
+        self.service_id
+    }
+
+    pub const fn host(&self) -> &String {
+        &self.host
+    }
+}
+
 #[derive(Debug, Clone)]
 pub enum CreationError {
     InvalidPrivateKey(ErrorStack),
@@ -47,17 +57,17 @@ pub enum Error {
 impl Client {
     pub fn new(
         service_id: i32,
-        key: &str,
+        key: &[u8],
         host: String,
-        host_key: &str,
+        host_key: &[u8],
     ) -> Result<Self, CreationError> {
         Ok(Self {
             service_id,
             http_client: reqwest::Client::new(),
-            key: PKey::private_key_from_pem(key.as_bytes())
+            key: PKey::private_key_from_pem(key)
                 .map_err(CreationError::InvalidPrivateKey)?,
             host,
-            host_key: PKey::public_key_from_pem(host_key.as_bytes())
+            host_key: PKey::public_key_from_pem(host_key)
                 .map_err(CreationError::InvalidPublicHostKey)?,
         })
     }
