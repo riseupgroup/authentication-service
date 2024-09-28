@@ -11,7 +11,7 @@ use crate::{
 
 struct AuthenticationRequest {
     id: u64,
-    service: i32,
+    service: u32,
     user: User,
 }
 
@@ -53,7 +53,7 @@ impl Server {
 
     fn query_authentication_request(
         &mut self,
-        service: i32,
+        service: u32,
         id: u64,
         public_key: &PKey<Public>,
     ) -> Result<Message, Error> {
@@ -65,7 +65,7 @@ impl Server {
         encrypt_message(message, public_key, &self.key, service).map_err(Error::EncryptionError)
     }
 
-    pub fn answer_authentication_request(&mut self, service: i32, user: User) -> u64 {
+    pub fn answer_authentication_request(&mut self, service: u32, user: User) -> u64 {
         let mut id;
 
         loop {

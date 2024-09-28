@@ -20,7 +20,7 @@ pub use server::Server;
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct User {
-    pub id: i32,
+    pub id: u32,
     pub name: String,
     pub display_name: String,
     pub picture: String,
@@ -30,13 +30,13 @@ pub struct User {
 
 #[derive(Serialize, Deserialize)]
 pub struct Message {
-    service: i32,
+    service: u32,
     message: Vec<u8>,
     signature: Vec<u8>,
 }
 
 impl Message {
-    pub fn service(&self) -> i32 {
+    pub fn service(&self) -> u32 {
         self.service
     }
 }
@@ -61,7 +61,7 @@ enum AuthenticationRequestAnswer {
 #[derive(Serialize, Deserialize)]
 struct InnerMessage<T> {
     now: DateTime<Utc>,
-    service: i32,
+    service: u32,
     message: T,
 }
 
@@ -75,7 +75,7 @@ fn encrypt_message<T: Serialize>(
     message: T,
     public_key: &PKey<Public>,
     private_key: &PKey<Private>,
-    service: i32,
+    service: u32,
 ) -> Result<Message, EncryptionError> {
     let data = bincode::serialize(&InnerMessage {
         now: Utc::now(),
@@ -135,7 +135,7 @@ fn decrypt_message<'a, T: Deserialize<'a>>(
     decrypted: &'a mut Vec<u8>,
     public_key: &PKey<Public>,
     private_key: &PKey<Private>,
-    service: Option<i32>,
+    service: Option<u32>,
 ) -> Result<T, DecryptionError> {
     if let Some(service) = service {
         if service != message.service {

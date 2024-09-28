@@ -11,7 +11,7 @@ use crate::{
 };
 
 pub struct Client {
-    service_id: i32,
+    service_id: u32,
     http_client: reqwest::Client,
     key: PKey<Private>,
     host: String,
@@ -19,7 +19,7 @@ pub struct Client {
 }
 
 impl Client {
-    pub const fn service_id(&self) -> i32 {
+    pub const fn service_id(&self) -> u32 {
         self.service_id
     }
 
@@ -56,7 +56,7 @@ pub enum Error {
 
 impl Client {
     pub fn new(
-        service_id: i32,
+        service_id: u32,
         key: &[u8],
         host: String,
         host_key: &[u8],
