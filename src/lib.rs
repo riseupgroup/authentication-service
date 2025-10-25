@@ -9,6 +9,7 @@ use {
         sign::{Signer, Verifier},
     },
     serde::{Deserialize, Serialize},
+    std::ops::Neg,
 };
 
 pub mod client;
@@ -180,10 +181,13 @@ fn decrypt_message<'a, T: Deserialize<'a>>(
     }
 
     let duration = Utc::now().signed_duration_since(inner_message.now);
-    let max_duration = Duration::from_std(std::time::Duration::from_secs(15))
+    let max_duration = Duration::from_std(std::time::Duration::from_secs(60))
         .map_err(|_| DecryptionError::TimestampVerificationError)?;
+    let min_duration = Duration::from_std(std::time::Duration::from_secs(30))
+        .map_err(|_| DecryptionError::TimestampVerificationError)?
+        .neg();
 
-    if duration > max_duration || duration < Duration::zero() {
+    if duration > max_duration || duration < min_duration {
         return Err(DecryptionError::InvalidTimestamp);
     }
 

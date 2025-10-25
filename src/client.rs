@@ -64,8 +64,7 @@ impl Client {
         Ok(Self {
             service_id,
             http_client: reqwest::Client::new(),
-            key: PKey::private_key_from_pem(key)
-                .map_err(CreationError::InvalidPrivateKey)?,
+            key: PKey::private_key_from_pem(key).map_err(CreationError::InvalidPrivateKey)?,
             host,
             host_key: PKey::public_key_from_pem(host_key)
                 .map_err(CreationError::InvalidPublicHostKey)?,
